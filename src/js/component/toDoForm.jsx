@@ -49,12 +49,12 @@ const toDoForm = (props) => {
                 className="toDo-input" 
                 type="text" 
                 value={input}
-                placeholder="Add a todo" 
+                placeholder="Add a to Do" 
                 aria-label="default input example"
                 onChange={handleChange}
                 ref={inputRef}
                 />
-                <button type="button" className="btn btn-outline-info">Add ToDo </button>
+                <button type="button" className="btn btn-outline-info">Add To Do</button>
                 </>
                 )
             }
