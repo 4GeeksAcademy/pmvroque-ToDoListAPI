@@ -1,46 +1,103 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ToDoForm from './toDoForm'
 import ToDo from './toDo'
 
 const toDoList = () => {
     const [toDos, setToDos] = useState([])
     
-    const addToDo = (toDo) => {
+    const getToDos = async() => {
+        let response = await fetch("https://playground.4geeks.com/todo/users/pmvroque")
+        let data = await response.json()
+        setToDos(data.todos)
+        }
+    
+        useEffect(() => {
+        const createUser = async() => {
+            let response = await fetch("https://playground.4geeks.com/todo/users/pmvroque")
+            let data = await response.json()
+            if(data.detail == "User pmvroque doesn't exist.") {
+                let response = await fetch("https://playground.4geeks.com/todo/users/pmvroque", {
+                    method: "POST"
+                })
+                let data = await response.json()
+            }
+        }
+        createUser()
+          getToDos()
+        } , [])
+    
+ 
+    const addToDo = async(toDo) => {
         
         if(!toDo.text || /^\s*$/.test(toDo.text)) {
             return
         }
-        
+        let response = await fetch("https://playground.4geeks.com/todo/todos/pmvroque", {
+            method: "POST",
+            body: JSON.stringify({
+                "label": toDo.text,
+                "is_done": false
+            }),
+            headers: {
+                "Content-Type": "application/json",
+              }
+        })
+        let data = await response.json()
         const newToDos = [toDo, ...toDos]
 
-        setToDos(newToDos)
+        getToDos()
         
     }
 
-    const updateToDo = (toDoId, newValue) => {
+    const updateToDo = async(toDoId, newValue) => {
         if (!newValue.text || /^\s*$/.test(newValue.text)) {
             return;
         }
+        let response = await fetch("https://playground.4geeks.com/todo/todos/" + toDoId, {
+            method: "PUT",
+            body: JSON.stringify({
+                "label": newValue.text,
+                "is_done": false 
+            }),
+            headers: {
+                "Content-Type": "application/json",
+              }
 
-        setToDos(prev => prev.map(item => (item.id === toDoId ? newValue : item)))
+        })
+        let data = response.json()
+        getToDos()
+
     }
 
-    const removeToDo = (id) => {
+    const removeToDo = async(id, toDo) => {
         const removeArr = [...toDos].filter(toDo => toDo.id !== id)
-
-        setToDos(removeArr)
+        let response = await fetch("https://playground.4geeks.com/todo/todos/" + id, {
+            method: "DELETE"
+        })
+        let data = await response.json()
+        window.location.reload();
+        getToDos()
     }
-
+    
     
 
-    const completeToDo = (id) => {
-        let updatedToDos = toDos.map(toDo => {
-            if (toDo.id === id) {
-                toDo.isComplete = !toDo.isComplete
-            }
+    const completeToDo = async(id, toDo) => {
+       
+            let response = await fetch("https://playground.4geeks.com/todo/todos/" + id, {
+                method: "PUT",
+                body: JSON.stringify({
+                    "label": toDo,
+                    "is_done": true 
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                  }
+    
+            })
+            let data = await response.json()
             return toDo
-        })
-        setToDos(updatedToDos)
+            window.location.reload();
+        getToDos()
     }
 
 

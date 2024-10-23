@@ -1,16 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ToDoForm from "./toDoForm"
 import { RiCloseCircleLine } from "react-icons/ri";
 import { TiEdit } from 'react-icons/ti'
 
 
-const toDo = ({toDos, completeToDo, removeToDo, updateToDo}) => {
+const ToDo = ({toDos, completeToDo, removeToDo, updateToDo}) => {
   const [edit, setEdit] = useState({
     id: null,
     value: ''
   })
-
-  const submitUpdate = (value) => {
+ 
+       
+    const submitUpdate = (value) => {
     updateToDo(edit.id, value)
     setEdit ({
         id: null,
@@ -22,23 +23,23 @@ const toDo = ({toDos, completeToDo, removeToDo, updateToDo}) => {
     return <ToDoForm edit={edit} onSubmit={submitUpdate}/>
   }
 
-  return toDos.map((toDo, index) => (
-    <div className={toDo.isComplete ? 'toDo-row complete' : 'toDo-row'} key={index}>
+  return toDos.map((ToDo, index) => (
+    <div className={ToDo.is_done ? 'ToDo-row complete' : 'ToDo-row'} key={index}>
     
-    <div key={toDo.id} onClick={() => completeToDo(toDo.id)}>
-        {toDo.text}
+    <div key={ToDo.id} onClick={() => completeToDo(ToDo.id, ToDo.label)} className ="text-white">
+        {ToDo.label}
     </div>
     
     <div className="icons">
         <RiCloseCircleLine 
-        onClick={() => removeToDo(toDo.id)}
+        onClick={() => removeToDo(ToDo.id)}
         className='delete-icon'
         />
-        <TiEdit onClick={() => setEdit({id : toDo.id, value: toDo.text })}
+        <TiEdit onClick={() => setEdit({id : ToDo.id, value: ToDo.label })}
         className='delete-icon'/>
     </div>
     </div>
   ))
 }
 
-export default toDo
+export default ToDo
